@@ -1,0 +1,6 @@
+[SCHEDULER] Round Robin started. n=5, quantum=3
+[SCHEDULER] PID 5 (Fire_Task_5) TERMINATED at t=17 | WT=11 TAT=13
+[SCHEDULER] PID 2 (Fire_Task_2) TERMINATED at t=18 | WT=13 TAT=17
+[SCHEDULER] PID 4 (Ambulance_Task_4) TERMINATED at t=23 | WT=15 TAT=20
+[SCHEDULER] PID 1 (Ambulance_Task_1) TERMINATED at t=25 | WT=17 TAT=25
+[SCHEDULER] PID 3 (Police_Task_3) TERMINATED at t=28 | WT=17 TAT=26
