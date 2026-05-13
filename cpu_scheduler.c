@@ -1,30 +1,27 @@
-/*
- * ============================================================
- *  CS 225 – Mini OS | Smart Emergency Response Center (SERC)
- *  Module: CPU Scheduling
- *  Author: [Your Name]
- *  Date  : May 2026
- *
- *  Algorithms Implemented:
- *    1. Round Robin (RR)          – preemptive, time-quantum based
- *    2. Priority Scheduling (PS)  – non-preemptive, lower value = higher priority
- *
- *  Metrics Computed:
- *    - Waiting Time       = Turnaround Time – Burst Time
- *    - Turnaround Time    = Finish Time – Arrival Time
- *    - Response Time      = First-Run Time – Arrival Time
- *    - CPU Utilization    = (Total Burst Time / Makespan) × 100
- *
- *  Integration Notes:
- *    - Call cpu_scheduling_module() from main() or the CLI menu (Part 4).
- *    - If Part 1 defines a PCB struct, replace the local definition in
- *      cpu_scheduler.h with #include "pcb.h" and adjust field names.
- *    - Logging calls at the bottom of each algorithm feed into Part 4's
- *      file management module (log_event function stub included).
- * ============================================================
- */
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
 
-#include "cpu_scheduler.h"
+#define MAX_PROCESSES    20
+#define MAX_NAME_LEN     50
+#define RR_TIME_QUANTUM  3
+
+typedef enum { NEW=0, READY=1, RUNNING=2, WAITING=3, TERMINATED=4 } ProcessState;
+typedef enum { AMBULANCE=1, FIRE=2, POLICE=3 } EmergencyType;
+
+typedef struct {
+    int           pid;
+    char          name[MAX_NAME_LEN];
+    EmergencyType emergency_type;
+    ProcessState  state;
+    int  arrival_time, burst_time, remaining_time, priority;
+    int  start_time, finish_time, waiting_time, turnaround_time, response_time;
+} PCB;
+
+typedef struct QueueNode { PCB *process; struct QueueNode *next; } QueueNode;
+typedef struct { QueueNode *front, *rear; int size; } ReadyQueue;
+typedef struct { double avg_waiting_time, avg_turnaround_time, avg_response_time, cpu_utilization; int total_time, n_processes; } SchedulingResult;
+typedef struct { int pid; char name[MAX_NAME_LEN]; int start, end; } GanttEntry;
 
 /* ═══════════════════════════════════════════════════════════
  *  SECTION 1 — HELPER / UTILITY FUNCTIONS
