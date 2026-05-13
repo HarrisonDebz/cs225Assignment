@@ -43,9 +43,9 @@ typedef struct {
   int start, end;
 } GanttEntry;
 
-/* ═══════════════════════════════════════════════════════════
+/* ===========================================================
  *  SECTION 1 — HELPER / UTILITY FUNCTIONS
- * ═══════════════════════════════════════════════════════════ */
+ * =========================================================== */
 
 /* Convert ProcessState enum to a readable string */
 const char *state_to_str(ProcessState s) {
@@ -109,7 +109,7 @@ void print_pcb(PCB *p) {
          p->arrival_time, p->burst_time, state_to_str(p->state));
 }
 
-/* ─── Log stub ───────────────────────────────────────────────
+/* --- Log stub -----------------------------------------------
  * Integrate with Part 4's file management module.
  * Replace body with a call to that module's log function.       */
 static void log_event(const char *event) {
@@ -120,9 +120,9 @@ static void log_event(const char *event) {
   }
 }
 
-/* ═══════════════════════════════════════════════════════════
+/* ===========================================================
  *  SECTION 2 — READY QUEUE (FIFO LINKED LIST)
- * ═══════════════════════════════════════════════════════════ */
+ * =========================================================== */
 
 ReadyQueue *create_queue(void) {
   ReadyQueue *q = (ReadyQueue *)malloc(sizeof(ReadyQueue));
@@ -174,7 +174,7 @@ void free_queue(ReadyQueue *q) {
   free(q);
 }
 
-/* ═══════════════════════════════════════════════════════════
+/* ===========================================================
  *  SECTION 3 — ALGORITHM 1: ROUND ROBIN (PREEMPTIVE)
  *
  *  Approach:
@@ -184,7 +184,7 @@ void free_queue(ReadyQueue *q) {
  *    - Newly arrived processes are added BEFORE re-queuing the
  *      preempted process (standard RR convention).
  *    - All five process states are updated during simulation.
- * ═══════════════════════════════════════════════════════════ */
+ * =========================================================== */
 
 SchedulingResult run_round_robin(PCB processes[], int n, int quantum,
                                  GanttEntry gantt[], int *gantt_len) {
@@ -330,7 +330,7 @@ SchedulingResult run_round_robin(PCB processes[], int n, int quantum,
   return r;
 }
 
-/* ═══════════════════════════════════════════════════════════
+/* ===========================================================
  *  SECTION 4 — ALGORITHM 2: PRIORITY SCHEDULING (NON-PREEMPTIVE)
  *
  *  Approach:
@@ -340,7 +340,7 @@ SchedulingResult run_round_robin(PCB processes[], int n, int quantum,
  *      prevents indefinite starvation of equal-priority tasks.
  *    - Emergency type directly drives priority:
  *        Ambulance (1) > Fire (2) > Police (3)
- * ═══════════════════════════════════════════════════════════ */
+ * =========================================================== */
 
 SchedulingResult run_priority_scheduling(PCB processes[], int n,
                                          GanttEntry gantt[], int *gantt_len) {
@@ -365,7 +365,7 @@ SchedulingResult run_priority_scheduling(PCB processes[], int n,
   log_event("Priority Scheduling (non-preemptive) started.");
 
   while (done < n) {
-    /* ── Find highest-priority READY process ── */
+    /* -- Find highest-priority READY process -- */
     int best = -1;
     for (int i = 0; i < n; i++) {
       if (completed[i])
@@ -455,15 +455,15 @@ SchedulingResult run_priority_scheduling(PCB processes[], int n,
   return r;
 }
 
-/* ═══════════════════════════════════════════════════════════
+/* ===========================================================
  *  SECTION 5 — DISPLAY FUNCTIONS
- * ═══════════════════════════════════════════════════════════ */
+ * =========================================================== */
 
 /* Renders a text-based Gantt chart to stdout */
 void display_gantt_chart(GanttEntry gantt[], int len) {
-  printf("\n  ╔══════════════════════════════════════════════════╗\n");
-  printf("  ║               GANTT CHART                       ║\n");
-  printf("  ╚══════════════════════════════════════════════════╝\n");
+  printf("\n  +==================================================+\n");
+  printf("  |               GANTT CHART                       |\n");
+  printf("  +==================================================+\n");
 
   /* Top border */
   printf("  ");
@@ -517,63 +517,63 @@ void display_gantt_chart(GanttEntry gantt[], int len) {
 /* Per-process metrics table */
 void display_metrics_table(PCB processes[], int n) {
   printf("\n  "
-         "╔════════════════════════════════════════════════════════════════════"
-         "══╗\n");
-  printf("  ║                     PROCESS SCHEDULING METRICS                   "
-         "   ║\n");
+         "+===================================================================="
+         "==+\n");
+  printf("  |                     PROCESS SCHEDULING METRICS                   "
+         "   |\n");
   printf("  "
-         "╠══════╦══════════════════════╦════╦════╦════════╦══════════╦════════"
-         "╣\n");
-  printf("  ║ PID  ║ Name                 ║ AT ║ BT ║  Start ║  Finish  ║   WT "
-         "  ║\n");
-  printf("  ║      ║                      ║    ║    ║        ║          ║ TAT "
-         "RT ║\n");
+         "+======╦======================╦====╦====╦========╦==========╦========"
+         "+\n");
+  printf("  | PID  | Name                 | AT | BT |  Start |  Finish  |   WT "
+         "  |\n");
+  printf("  |      |                      |    |    |        |          | TAT "
+         "RT |\n");
   printf("  "
-         "╠══════╬══════════════════════╬════╬════╬════════╬══════════╬════════"
-         "╣\n");
+         "+======+======================+====+====+========+==========+========"
+         "+\n");
 
   for (int i = 0; i < n; i++) {
     PCB *p = &processes[i];
-    printf("  ║ P%-3d ║ %-20s ║ %-2d ║ %-2d ║  %-5d ║   %-5d  ║WT=%-2d   ║\n",
+    printf("  | P%-3d | %-20s | %-2d | %-2d |  %-5d |   %-5d  |WT=%-2d   |\n",
            p->pid, p->name, p->arrival_time, p->burst_time, p->start_time,
            p->finish_time, p->waiting_time);
-    printf("  ║      ║                      ║    ║    ║        ║          "
-           "║TAT=%-2d ║\n",
+    printf("  |      |                      |    |    |        |          "
+           "|TAT=%-2d |\n",
            p->turnaround_time);
-    printf("  ║      ║                      ║    ║    ║        ║          "
-           "║RT=%-2d  ║\n",
+    printf("  |      |                      |    |    |        |          "
+           "|RT=%-2d  |\n",
            p->response_time);
     printf("  "
-           "╠══════╬══════════════════════╬════╬════╬════════╬══════════╬══════"
-           "══╣\n");
+           "+======+======================+====+====+========+==========+======"
+           "==+\n");
   }
-  printf("  ║ AT=Arrival Time  BT=Burst Time  WT=Waiting  TAT=Turnaround  "
-         "RT=Response ║\n");
+  printf("  | AT=Arrival Time  BT=Burst Time  WT=Waiting  TAT=Turnaround  "
+         "RT=Response |\n");
   printf("  "
-         "╚════════════════════════════════════════════════════════════════════"
-         "═══════╝\n");
+         "+===================================================================="
+         "=======+\n");
 }
 
 /* Summary results box */
 void display_aggregate_results(SchedulingResult *r, const char *algo_name) {
-  printf("\n  ╔══════════════════════════════════════════════════╗\n");
-  printf("  ║    AGGREGATE RESULTS — %-24s║\n", algo_name);
-  printf("  ╠══════════════════════════════════════════════════╣\n");
-  printf("  ║  Processes Scheduled : %-26d║\n", r->n_processes);
-  printf("  ║  Total Makespan      : %-24d ms║\n", r->total_time);
-  printf("  ║  Avg Waiting Time    : %-23.2f ms║\n", r->avg_waiting_time);
-  printf("  ║  Avg Turnaround Time : %-23.2f ms║\n", r->avg_turnaround_time);
-  printf("  ║  Avg Response Time   : %-23.2f ms║\n", r->avg_response_time);
-  printf("  ║  CPU Utilization     : %-22.1f %%  ║\n", r->cpu_utilization);
-  printf("  ╚══════════════════════════════════════════════════╝\n\n");
+  printf("\n  +==================================================+\n");
+  printf("  |    AGGREGATE RESULTS — %-24s|\n", algo_name);
+  printf("  +==================================================+\n");
+  printf("  |  Processes Scheduled : %-26d|\n", r->n_processes);
+  printf("  |  Total Makespan      : %-24d ms|\n", r->total_time);
+  printf("  |  Avg Waiting Time    : %-23.2f ms|\n", r->avg_waiting_time);
+  printf("  |  Avg Turnaround Time : %-23.2f ms|\n", r->avg_turnaround_time);
+  printf("  |  Avg Response Time   : %-23.2f ms|\n", r->avg_response_time);
+  printf("  |  CPU Utilization     : %-22.1f %%  |\n", r->cpu_utilization);
+  printf("  +==================================================+\n\n");
 }
 
-/* ═══════════════════════════════════════════════════════════
+/* ===========================================================
  *  SECTION 6 — INTERACTIVE MENU (CPU SCHEDULING MODULE)
  *
  *  Call cpu_scheduling_module() from your main() or the
  *  Part 4 CLI dispatcher.
- * ═══════════════════════════════════════════════════════════ */
+ * =========================================================== */
 
 /* Prompt user to build the process table interactively */
 static int get_processes_from_user(PCB processes[]) {
@@ -587,7 +587,7 @@ static int get_processes_from_user(PCB processes[]) {
 
   for (int i = 0; i < n; i++) {
     int arrival, burst, etype;
-    printf("\n  ── Task %d ──────────────────────────────\n", i + 1);
+    printf("\n  -- Task %d ------------------------------\n", i + 1);
     printf("  Emergency type  [1=Ambulance 2=Fire 3=Police]: ");
     scanf("%d", &etype);
     if (etype < 1 || etype > 3)
@@ -619,7 +619,7 @@ static int get_processes_from_user(PCB processes[]) {
 
     processes[i] = create_process(i + 1, name, (EmergencyType)etype, arrival,
                                   burst, priority);
-    printf("  ✓ Created: ");
+    printf("  [x] Created: ");
     print_pcb(&processes[i]);
   }
   return n;
@@ -655,11 +655,11 @@ void cpu_scheduling_module(void) {
   int choice;
 
   printf("\n");
-  printf("  ██████████████████████████████████████████████████\n");
-  printf("  █   SERC MINI-OS  —  CPU SCHEDULING MODULE       █\n");
-  printf("  ██████████████████████████████████████████████████\n");
+  printf("  **************************************************\n");
+  printf("  *   SERC MINI-OS  —  CPU SCHEDULING MODULE       *\n");
+  printf("  **************************************************\n");
 
-  /* ── Step 1: Load processes ── */
+  /* -- Step 1: Load processes -- */
   printf("\n  [1] Enter tasks manually\n");
   printf("  [2] Load demo scenario (5 emergency tasks)\n");
   printf("  Choice: ");
@@ -676,25 +676,25 @@ void cpu_scheduling_module(void) {
       print_pcb(&original[i]);
   }
 
-  /* ── Step 2: Algorithm selection ── */
+  /* -- Step 2: Algorithm selection -- */
   int running = 1;
   while (running) {
-    printf("\n  ┌─────────────────────────────────────────┐\n");
-    printf("  │       SELECT SCHEDULING ALGORITHM       │\n");
-    printf("  ├─────────────────────────────────────────┤\n");
-    printf("  │  [1] Round Robin (RR)                   │\n");
-    printf("  │  [2] Priority Scheduling (PS)           │\n");
-    printf("  │  [3] Run BOTH and compare               │\n");
-    printf("  │  [4] Change time quantum (current: %2d)  │\n", quantum);
-    printf("  │  [5] Reload / new task set              │\n");
-    printf("  │  [0] Return to main menu                │\n");
-    printf("  └─────────────────────────────────────────┘\n");
+    printf("\n  +-----------------------------------------+\n");
+    printf("  |       SELECT SCHEDULING ALGORITHM       |\n");
+    printf("  +-----------------------------------------+\n");
+    printf("  |  [1] Round Robin (RR)                   |\n");
+    printf("  |  [2] Priority Scheduling (PS)           |\n");
+    printf("  |  [3] Run BOTH and compare               |\n");
+    printf("  |  [4] Change time quantum (current: %2d)  |\n", quantum);
+    printf("  |  [5] Reload / new task set              |\n");
+    printf("  |  [0] Return to main menu                |\n");
+    printf("  +-----------------------------------------+\n");
     printf("  Choice: ");
     scanf("%d", &choice);
 
     switch (choice) {
 
-    /* ── Round Robin ── */
+    /* -- Round Robin -- */
     case 1: {
       memcpy(processes, original, sizeof(PCB) * n);
       printf("\n  Running Round Robin (quantum = %d ms)...\n", quantum);
@@ -706,7 +706,7 @@ void cpu_scheduling_module(void) {
       break;
     }
 
-    /* ── Priority Scheduling ── */
+    /* -- Priority Scheduling -- */
     case 2: {
       memcpy(processes, original, sizeof(PCB) * n);
       printf("\n  Running Priority Scheduling...\n");
@@ -718,7 +718,7 @@ void cpu_scheduling_module(void) {
       break;
     }
 
-    /* ── Compare Both ── */
+    /* -- Compare Both -- */
     case 3: {
       PCB proc_rr[MAX_PROCESSES], proc_ps[MAX_PROCESSES];
       GanttEntry g_rr[MAX_PROCESSES * 20], g_ps[MAX_PROCESSES];
@@ -727,47 +727,47 @@ void cpu_scheduling_module(void) {
       memcpy(proc_rr, original, sizeof(PCB) * n);
       memcpy(proc_ps, original, sizeof(PCB) * n);
 
-      printf("\n  ══════════ ROUND ROBIN ══════════\n");
+      printf("\n  ========== ROUND ROBIN ==========\n");
       SchedulingResult rr =
           run_round_robin(proc_rr, n, quantum, g_rr, &glen_rr);
       display_gantt_chart(g_rr, glen_rr);
       display_metrics_table(proc_rr, n);
       display_aggregate_results(&rr, "Round Robin");
 
-      printf("\n  ══════════ PRIORITY SCHEDULING ══════════\n");
+      printf("\n  ========== PRIORITY SCHEDULING ==========\n");
       SchedulingResult ps = run_priority_scheduling(proc_ps, n, g_ps, &glen_ps);
       display_gantt_chart(g_ps, glen_ps);
       display_metrics_table(proc_ps, n);
       display_aggregate_results(&ps, "Priority Scheduling");
 
-      /* ── Side-by-side comparison ── */
+      /* -- Side-by-side comparison -- */
       printf(
-          "  ╔══════════════════════════════════════════════════════════╗\n");
-      printf("  ║                ALGORITHM COMPARISON                     ║\n");
-      printf("  ╠══════════════════════════╦═════════════╦════════════════╣\n");
-      printf("  ║ Metric                   ║ Round Robin ║    Priority    ║\n");
-      printf("  ╠══════════════════════════╬═════════════╬════════════════╣\n");
-      printf("  ║ Avg Waiting Time (ms)    ║ %11.2f ║ %14.2f ║\n",
+          "  +==========================================================+\n");
+      printf("  |                ALGORITHM COMPARISON                     |\n");
+      printf("  +==========================╦=============╦================+\n");
+      printf("  | Metric                   | Round Robin |    Priority    |\n");
+      printf("  +==========================+=============+================+\n");
+      printf("  | Avg Waiting Time (ms)    | %11.2f | %14.2f |\n",
              rr.avg_waiting_time, ps.avg_waiting_time);
-      printf("  ║ Avg Turnaround Time (ms) ║ %11.2f ║ %14.2f ║\n",
+      printf("  | Avg Turnaround Time (ms) | %11.2f | %14.2f |\n",
              rr.avg_turnaround_time, ps.avg_turnaround_time);
-      printf("  ║ Avg Response Time (ms)   ║ %11.2f ║ %14.2f ║\n",
+      printf("  | Avg Response Time (ms)   | %11.2f | %14.2f |\n",
              rr.avg_response_time, ps.avg_response_time);
-      printf("  ║ CPU Utilization (%%)      ║ %10.1f%% ║ %13.1f%% ║\n",
+      printf("  | CPU Utilization (%%)      | %10.1f%% | %13.1f%% |\n",
              rr.cpu_utilization, ps.cpu_utilization);
-      printf("  ╠══════════════════════════╬═════════════╬════════════════╣\n");
+      printf("  +==========================+=============+================+\n");
 
       /* Declare winner per metric */
-      printf("  ║ Better Avg Waiting       ║ %11s ║ %14s ║\n",
-             rr.avg_waiting_time <= ps.avg_waiting_time ? "✓" : "",
-             ps.avg_waiting_time < rr.avg_waiting_time ? "✓" : "");
-      printf("  ║ Better Avg Turnaround    ║ %11s ║ %14s ║\n",
-             rr.avg_turnaround_time <= ps.avg_turnaround_time ? "✓" : "",
-             ps.avg_turnaround_time < rr.avg_turnaround_time ? "✓" : "");
-      printf("  ║ Better CPU Utilization   ║ %11s ║ %14s ║\n",
-             rr.cpu_utilization >= ps.cpu_utilization ? "✓" : "",
-             ps.cpu_utilization > rr.cpu_utilization ? "✓" : "");
-      printf("  ╚══════════════════════════╩═════════════╩════════════════╝\n");
+      printf("  | Better Avg Waiting       | %11s | %14s |\n",
+             rr.avg_waiting_time <= ps.avg_waiting_time ? "[x]" : "",
+             ps.avg_waiting_time < rr.avg_waiting_time ? "[x]" : "");
+      printf("  | Better Avg Turnaround    | %11s | %14s |\n",
+             rr.avg_turnaround_time <= ps.avg_turnaround_time ? "[x]" : "",
+             ps.avg_turnaround_time < rr.avg_turnaround_time ? "[x]" : "");
+      printf("  | Better CPU Utilization   | %11s | %14s |\n",
+             rr.cpu_utilization >= ps.cpu_utilization ? "[x]" : "",
+             ps.cpu_utilization > rr.cpu_utilization ? "[x]" : "");
+      printf("  +==========================╩=============╩================+\n");
       printf(
           "\n  NOTE: Round Robin ensures fairness and responsiveness (good\n");
       printf(
@@ -779,7 +779,7 @@ void cpu_scheduling_module(void) {
       break;
     }
 
-    /* ── Change quantum ── */
+    /* -- Change quantum -- */
     case 4:
       printf("  New time quantum (ms): ");
       scanf("%d", &quantum);
@@ -788,7 +788,7 @@ void cpu_scheduling_module(void) {
       printf("  Time quantum set to %d ms.\n", quantum);
       break;
 
-    /* ── Reload processes ── */
+    /* -- Reload processes -- */
     case 5:
       printf("  [1] Enter tasks manually  [2] Demo scenario: ");
       scanf("%d", &choice);
@@ -808,15 +808,15 @@ void cpu_scheduling_module(void) {
   }
 }
 
-/* ═══════════════════════════════════════════════════════════
+/* ===========================================================
  *  SECTION 7 — STANDALONE MAIN (remove when integrating)
  *
  *  Compile standalone:
- *    gcc -Wall -o cpu_scheduler cpu_scheduler.c; .\cpu_scheduler.exe
+ *    gcc -Wall -o cpu_scheduler cpu_scheduler.c && ./cpu_scheduler
  *
  *  Compile with teammates' modules:
  *    gcc -Wall -o serc_os main.c cpu_scheduler.c pcb.c memory.c ipc.c cli.c
- * ═══════════════════════════════════════════════════════════ */
+ * =========================================================== */
 
 int main(void) {
   cpu_scheduling_module();
