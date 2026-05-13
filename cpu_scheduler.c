@@ -812,7 +812,7 @@ void cpu_scheduling_module(void) {
  *  SECTION 7 — STANDALONE MAIN (remove when integrating)
  *
  *  Compile standalone:
- *    gcc -Wall -o cpu_scheduler cpu_scheduler.c && ./cpu_scheduler
+ *    gcc -Wall -o cpu_scheduler cpu_scheduler.c; .\cpu_scheduler.exe
  *
  *  Compile with teammates' modules:
  *    gcc -Wall -o serc_os main.c cpu_scheduler.c pcb.c memory.c ipc.c cli.c

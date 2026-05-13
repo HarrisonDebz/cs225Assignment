@@ -4,3 +4,15 @@
 [SCHEDULER] PID 4 (Ambulance_Task_4) TERMINATED at t=23 | WT=15 TAT=20
 [SCHEDULER] PID 1 (Ambulance_Task_1) TERMINATED at t=25 | WT=17 TAT=25
 [SCHEDULER] PID 3 (Police_Task_3) TERMINATED at t=28 | WT=17 TAT=26
+[SCHEDULER] Round Robin started. n=5, quantum=3
+[SCHEDULER] PID 5 (Fire_Task_5) TERMINATED at t=17 | WT=11 TAT=13
+[SCHEDULER] PID 2 (Fire_Task_2) TERMINATED at t=18 | WT=13 TAT=17
+[SCHEDULER] PID 4 (Ambulance_Task_4) TERMINATED at t=23 | WT=15 TAT=20
+[SCHEDULER] PID 1 (Ambulance_Task_1) TERMINATED at t=25 | WT=17 TAT=25
+[SCHEDULER] PID 3 (Police_Task_3) TERMINATED at t=28 | WT=17 TAT=26
+[SCHEDULER] Priority Scheduling (non-preemptive) started.
+[SCHEDULER] PID 1 (Ambulance_Task_1) TERMINATED at t=8 | Priority=1 WT=0 TAT=8
+[SCHEDULER] PID 4 (Ambulance_Task_4) TERMINATED at t=13 | Priority=1 WT=5 TAT=10
+[SCHEDULER] PID 2 (Fire_Task_2) TERMINATED at t=17 | Priority=2 WT=12 TAT=16
+[SCHEDULER] PID 5 (Fire_Task_5) TERMINATED at t=19 | Priority=2 WT=13 TAT=15
+[SCHEDULER] PID 3 (Police_Task_3) TERMINATED at t=28 | Priority=3 WT=17 TAT=26
